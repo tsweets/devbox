@@ -1,0 +1,53 @@
+---
+# tasks file for ldap
+- name: Ensure 389 Directory Server is installed
+  dnf:
+    name:  '@389-directory-server:stable/default'
+    state: present
+
+#- name: Ensure LDAP Shell is installed
+#  dnf:
+#    name: shelldap
+#    state: present
+  
+
+- name: Check if instance directory exists
+  stat:
+    path: "/var/lib/dirsrv/slapd-{{ dirsrv_serverid }}"
+  register: dirsrv_instance_dir
+
+- name: "Check if {{ dirsrv_serverid }} instance directory exists"
+  set_fact:
+    dirsrv_instance_dir_exists: "{{ dirsrv_instance_dir.stat.exists and dirsrv_instance_dir.stat.isdir }}"
+
+- block:
+  - name: Copy installation template
+    template:
+      src: templates/install-v2.inf.j2
+      dest: /tmp/install.inf
+      mode: '600'
+    when: not dirsrv_instance_dir_exists
+
+  - name: Run installation script (dscreate)
+    command: /usr/sbin/dscreate --verbose from-file /tmp/install.inf
+    become: true
+    when:
+      - not dirsrv_instance_dir_exists
+#  always:
+#    - name: Remove installation template
+#      file:
+#        state: absent
+#        path: /tmp/install.inf
+
+- name: Start and enable 389DS {{ dirsrv_serverid }} instance
+  become: true
+  service:
+    name: "dirsrv@{{ dirsrv_serverid }}"
+    state: started
+    enabled: yes
+
+- name: Enable systemd target
+  become: true
+  service:
+    name: dirsrv.target
+    enabled: yes

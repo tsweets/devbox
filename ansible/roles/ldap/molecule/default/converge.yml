@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include Base"
+      include_role:
+        name: "base"
+    - name: "Include ldap"
+      include_role:
+        name: "ldap"
