@@ -4,16 +4,13 @@
   driver:
     name: docker
   platforms:
-    - name: CentOS8-Default-SYSCTL
-      image: centos:8
-      python_package: python2
-      python_devel_package: python2-devel
-      install_epel: true
-      command: /sbin/init
-      capabilities:
-        - SYS_ADMIN
+    - name: instance
+      image: tsweets/molecule-docker-centos8:latest
+      command: ${MOLECULE_DOCKER_COMMAND:-""}
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      privileged: true
+      pre_build_image: true
   provisioner:
     name: ansible
   verifier:

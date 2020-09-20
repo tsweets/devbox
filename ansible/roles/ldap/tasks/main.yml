@@ -10,6 +10,12 @@
 #    name: shelldap
 #    state: present
   
+- name: Open Firewall Port
+  firewalld:
+    service: ldap
+    permanent: yes
+    state: enabled
+    immediate: yes
 
 - name: Check if instance directory exists
   stat:
@@ -51,3 +57,53 @@
   service:
     name: dirsrv.target
     enabled: yes
+
+#- name: Make sure we have a parent entry for users
+#  ldap_entry:
+#    server_uri: ldap://localhost/
+#    bind_dn: cn=Directory Manager
+#    bind_pw: "{{ GLOBAL_PASSWD }}"
+#    dn: ou=users,dc=devops,dc=local
+#    objectClass: organizationalUnit
+- name: Make sure we have an devops group
+  ldap_entry:
+    state: present
+    server_uri: ldap://localhost/
+    bind_dn: cn=Directory Manager
+    bind_pw: "{{ GLOBAL_PASSWD }}"
+    dn: cn=devops,ou=groups,dc=devops,dc=local
+    objectClass:
+      - top
+      - groupOfNames
+      - posixGroup
+      - nsMemberOf
+    attributes:
+      cn: devops
+      gidNumber: 5000
+
+- name: Make sure we have an devops service account
+  ldap_entry:
+#    loginShell: /bin/false
+    state: present
+    server_uri: ldap://localhost/
+    bind_dn: cn=Directory Manager
+    bind_pw: "{{ GLOBAL_PASSWD }}"
+    dn: uid=devops,ou=people,dc=devops,dc=local
+    objectClass:
+      - top
+      - nsPerson
+      - nsAccount
+      - nsOrgPerson
+      - posixAccount
+    attributes:
+ #     description: DevOps Service Account
+ #     userPassword: "devops"
+ #     cn: DevOps Acct
+ #     sn: Acct
+      cn: DevOps Acct
+      displayName: Devops Acct
+      homeDirectory: /var/empty
+      uidNumber: 4000
+      gidNumber: 5000
+      userPassword: "{{ GLOBAL_PASSWD }}"
+      #mail: devops@devops.local

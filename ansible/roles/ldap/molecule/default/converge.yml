@@ -1,6 +1,8 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    - GLOBAL_PASSWD: molecule1234
   tasks:
     - name: "Include Base"
       include_role:

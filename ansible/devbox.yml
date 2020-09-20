@@ -37,11 +37,21 @@
 
     gitea_show_user_email: false
 
-  tasks:
+  pre_tasks:
+  - name: Add IP to /etc/hosts
+    lineinfile:
+      dest: /etc/hosts
+      line: '192.168.6.133 devbox devbox.devops.local'
+      state: present
+
+  - name: Set Hostname
+    hostname:
+      name: devbox.devops.local
   - name: Enable Cockpit
     systemd:
       name: cockpit
       state: started
+      enabled: true
 
   roles:
   - base

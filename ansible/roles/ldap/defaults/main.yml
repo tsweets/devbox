@@ -4,7 +4,7 @@ dirsrv_serverid: default
 dirsrv_fqdn: "{{ ansible_nodename }}"
 dirsrv_rootdn: cn=Directory Manager
 dirsrv_rootdn_password: "{{ GLOBAL_PASSWD }}"
-dirsrv_install_examples: false
+dirsrv_install_examples: true
 dirsrv_suffix: dc=devops,dc=local
 
 

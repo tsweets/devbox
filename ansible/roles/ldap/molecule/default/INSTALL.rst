@@ -20,3 +20,12 @@ widely recommended `'--user' flag`_ when invoking ``pip``.
 .. code-block:: bash
 
     $ python3 -m pip install 'molecule[docker]'
+
+
+Test CMDs
+=========
+
+ldapsearch -h localhost -x -D "cn=Directory Manager" -w molecule1234
+ldapsearch -h localhost -b "dc=devops,dc=local" -x -D "cn=Directory Manager" -w molecule1234
+dsidm -b "dc=devops,dc=local" -D "cn=Directory Manager" -w molecule1234 ldap://localhost:389  user list
+
