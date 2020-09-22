@@ -1,0 +1,11 @@
+---
+# defaults file for dnsmasq
+dnsmasq_domain_needed: false
+dnsmasq_bogus_priv: true
+dnsmasq_authoritative: true
+dnsmasq_expand_hosts: false
+dnsmasq_upstream_servers:
+  - 8.8.4.4
+  - 8.8.8.8
+dnsmasq_domain: 'devops.local'
+dnsmasq_addn_hosts: '/etc/devops-hosts'

@@ -1,0 +1,69 @@
+---
+# tasks file for postfix
+# https://wiki.centos.org/HowTos/postfix
+- name: Ensure postfix is installed.
+  package:
+    name: postfix
+    state: present
+- name: Ensure dovecot is installed.
+  package:
+    name: dovecot
+    state: present
+- name: Ensure sendmail is gone
+  package:
+    name: sendmail
+    state: absent
+
+#- name: Update Postfix configuration.
+#  lineinfile:
+#    dest: "{{ postfix_config_file }}"
+#    line: "{{ item.name }} = {{ item.value }}"
+#    regexp: "^{{ item.name }} ="
+#    mode: 0644
+#  with_items:
+#    - name: inet_interfaces
+#      value: "{{ postfix_inet_interfaces }}"
+#    - name: inet_protocols
+#      value: "{{ postfix_inet_protocols }}"
+#  notify: restart postfix
+
+- name: Ensure postfix is started and enabled at boot.
+  service:
+    name: postfix
+    state: started
+    enabled: true
+
+- name: Ensure dovecot is started and enabled at boot.
+  service:
+    name: dovecot
+    state: started
+    enabled: true
+
+- name: Configure main.cf
+  template:
+    src: main.cf.j2
+    dest: /etc/postfix
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+
+- name: Configure dovecot.conf
+  template:
+    src: dovecot.conf.j2
+    dest: /etc/dovecot
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dovecot
+- name: Configure 10-mail.conf.j2
+  template:
+    src: 10-mail.conf.j2
+    dest: /etc/dovecot/conf.d
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dovecot
