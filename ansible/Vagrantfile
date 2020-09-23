@@ -1,0 +1,34 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    #config.vm.box = "generic/centos8"
+    config.vm.box = "bento/centos-8.2"
+    config.vm.box_version = "202008.16.0"
+    # config.vm.box = "centos/8"
+   # config.vm.box_version = "1905.1"
+    #config.ssh.insert_key = false
+
+  config.vm.provider :virtualbox do |v|
+    v.name = "Devbox Server"
+    v.memory = 2048
+    v.cpus = 2
+     v.gui = true
+#    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+#    v.customize ["modifyvm", :id, "--ioapic", "on"]
+     v.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+     v.customize ["modifyvm", :id, "--vram", "16"]
+  end
+
+#  config.vm.hostname = "devboxserver"
+  config.vm.network :private_network, ip: "172.16.48.10"
+
+# Ansible provisioner.
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "devbox.yml"
+    ansible.ask_vault_pass = true
+   # ansible.inventory_path = "vagrant-hosts.ini"
+   # ansible.become = true
+  end
+
+end
