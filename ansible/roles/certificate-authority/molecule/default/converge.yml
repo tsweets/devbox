@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include certificate-authority"
+      include_role:
+        name: "certificate-authority"
+
+
