@@ -1,7 +1,9 @@
+# Note install provider in ~/.terraform.d/plugins/registry.terraform.io/hashicorp/libvirt/0.6.3/linux_amd64
+# Will need to download from github and compile
 terraform {
   required_providers {
     libvirt = {
-      source  = "dmacvicar/libvirt"
+      source  = "libvirt"
       version = "0.6.3"
     }
   }
@@ -30,7 +32,7 @@ resource "libvirt_domain" "test" {
   }
 
   disk {
-    volume_id = "${libvirt_volume.centos7-qcow2.id}"
+    volume_id = "libvirt_volume.centos7-qcow2.id"
   }
 
   console {
