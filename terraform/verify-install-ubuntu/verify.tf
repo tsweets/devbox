@@ -1,6 +1,5 @@
 # Note install provider in ~/.terraform.d/plugins/registry.terraform.io/hashicorp/libvirt/0.6.3/linux_amd64
 # Will need to download from github and compile
-# Make sure on ubuntu set security_driver = "none" in /etc/libvirtd/qemu.conf
 terraform {
   required_providers {
     libvirt = {
@@ -14,17 +13,11 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-resource "libvirt_pool" "ubuntu" {
-  name = "ubuntu"
-  type = "dir"
-  path = "/tmp/terraform-provider-libvirt-pool-ubuntu"
-}
-
-resource "libvirt_volume" "centos7-qcow2" {
-  name = "centos7.qcow2"
-  pool   = libvirt_pool.ubuntu.name
-  #source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
-  source = "../../downloads/CentOS-7-x86_64-GenericCloud.qcow2"
+resource "libvirt_volume" "ubuntu20-04" {
+  name = "ubuntu20-04"
+  pool = "default"
+  #source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
+  source = "../../downloads/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
   format = "qcow2"
 }
 
@@ -39,7 +32,7 @@ resource "libvirt_domain" "test" {
   }
 
   disk {
-    volume_id = libvirt_volume.centos7-qcow2.id
+    volume_id = "libvirt_volume.ubuntu20-04.id"
   }
 
   console {
