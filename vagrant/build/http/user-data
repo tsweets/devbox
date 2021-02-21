@@ -1,0 +1,19 @@
+#cloud-config
+#  mkpasswd --method=SHA-512 --rounds=4096
+autoinstall:
+  version: 1
+  identity:
+    hostname: ubuntu-server
+    password: "$6$rounds=4096$LcVlB5b2bsC$tinJD0jiFNbDfTtYCQT.yNwfO.3gEEx6HTnvUpTk5XUsFj8auCCLI6g2DDJLhrTv49xiKS4/f0IDSJ.SCcmYn0"
+    username: ubuntu
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: true
+        dhcp-identifier: mac
+  ssh:
+    install-server: true
+  late-commands:
+    - 'echo "ubuntu        ALL=(ALL)       NOPASSWD: ALL" > /target/etc/sudoers.d/ubuntu'
+    - chmod 440 /target/etc/sudoers.d/ubuntu
