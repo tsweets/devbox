@@ -28,8 +28,8 @@ source "virtualbox-iso" "devbox" {
 build {
     sources = ["sources.virtualbox-iso.devbox"]
 
-    provisioner "shell" {
-        inline = ["ls /"]
+    provisioner "ansible" {
+        playbook_file = "./helloworld-playbook.yml"
     }
 
 }
