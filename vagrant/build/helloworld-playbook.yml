@@ -1,6 +1,11 @@
 ---
 - name: This is a hello-world example
   hosts: all
+ # connection: ssh
+ # gather_facts: yes
+  become: yes
+ # become_user: ubuntu
+ # become_method: sudo
   tasks:
     - name: Create a file called '/tmp/testfile.txt' with the content 'hello world'.
       copy:

@@ -13,7 +13,7 @@ source "virtualbox-iso" "devbox" {
     shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
     ssh_username = "ubuntu"
     ssh_password = "ubuntu"
-    ssh_handshake_attempts = 20
+    ssh_handshake_attempts = 50
     ssh_pty = true
     ssh_timeout = "20m"
 
@@ -28,8 +28,29 @@ source "virtualbox-iso" "devbox" {
 build {
     sources = ["sources.virtualbox-iso.devbox"]
 
-    provisioner "ansible" {
-        playbook_file = "./helloworld-playbook.yml"
+    #provisioner "shell" {
+    #    inline = ["ls /"]
+    #}
+    provisioner "shell" {
+       execute_command = "echo 'ubuntu' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+       script = "ansible.sh"
+    }
+
+   # provisioner "ansible" {
+   #     playbook_file = "./helloworld-playbook.yml"
+   #    # use_proxy = false
+   #     user = "ubuntu"
+   #     extra_arguments = [ "-vvvv" ]
+   #     #      "ansible_env_vars": [ "ANSIBLE_HOST_KEY_CHECKING=False", "ANSIBLE_SSH_ARGS='-o ControlMaster=auto -o ControlPersist=60s'" ],
+   # }
+
+   provisioner "ansible-local" {
+      playbook_file = "./helloworld-playbook.yml"
+   }
+
+    provisioner "shell" {
+       execute_command = "echo 'ubuntu' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+       script = "cleanup.sh"
     }
 
 }
