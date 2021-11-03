@@ -8,6 +8,11 @@ Look at this bug.
 
 https://github.com/dmacvicar/terraform-provider-libvirt/issues/747
 
+Ubuntu App Armor is also an issue
+https://github.com/jedi4ever/veewee/issues/996
+
+need a security_driver = "none" in /etc/libvirt/qemu.conf
+
 Download the CentOS qcow image, to <project root>/Downloads (Create this dir)
 
 ```
@@ -47,3 +52,7 @@ https://molecule.readthedocs.io
 - molecule converge
 - molecule login
 - molecule destroy
+
+## Virsh Commands
+- virsh list --all
+- virsh undefine test
