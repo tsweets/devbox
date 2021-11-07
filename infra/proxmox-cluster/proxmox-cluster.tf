@@ -12,26 +12,35 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-resource "libvirt_pool" "ubuntu" {
-  name = "ubuntu"
+resource "libvirt_pool" "cluster" {
+  name = "cluster"
   type = "dir"
-  path = "/tmp/terraform-provider-libvirt-pool-ubuntu"
+  path = "/mnt/data/terraform"
 }
 
 # We fetch the latest ubuntu release image from their mirrors
-resource "libvirt_volume" "ubuntu-qcow2" {
-  name   = "ubuntu-qcow2"
-  pool   = libvirt_pool.ubuntu.name
-  #source = "https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img"
-  #source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
-  source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
-  format = "qcow2"
+# resource "libvirt_volume" "ubuntu-qcow2" {
+#   name   = "ubuntu-qcow2"
+#   pool   = libvirt_pool.ubuntu.name
+#   #source = "https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img"
+#   #source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
+#   source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
+#   format = "qcow2"
+# }
+
+
+# volumes to attach to the proxmox servers (10GB)
+resource "libvirt_volume" "proxmox_boot" {
+  name          = "proxmox_boot"
+  size          = 10000000000
+  pool          = libvirt_pool.cluster.name
 }
 
 # volumes to attach to the proxmox servers (10GB)
-resource "libvirt_volume" "data" {
-  name           = "proxmox_data.qcow2"
-  size           = 10000000000
+resource "libvirt_volume" "proxmox_data" {
+  name          = "proxmox_data"
+  size          = 10000000000
+  pool          = libvirt_pool.cluster.name
 }
 
 
@@ -41,10 +50,12 @@ resource "libvirt_volume" "data" {
 
 
 # Create the machine
-resource "libvirt_domain" "domain-ubuntu" {
-  name   = "ubuntu-terraform"
-  memory = "512"
-  vcpu   = 1
+resource "libvirt_domain" "promox-support" {
+  name        = "proxmox-support"
+  description = "Always on Support Server"
+  memory      = "512"
+  vcpu        = 1
+  running     = "false"
 
 
   network_interface {
@@ -67,11 +78,11 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   disk {
-    volume_id = libvirt_volume.ubuntu-qcow2.id
+    volume_id = libvirt_volume.proxmox_boot.id
   }
 
   disk {
-    volume_id = libvirt_volume.data.id
+    volume_id = libvirt_volume.proxmox_data.id
   }
 
   graphics {
