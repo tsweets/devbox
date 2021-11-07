@@ -12,6 +12,12 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
+locals {
+  # 10GB
+  boot_disk_size = 10000000000  
+  # 10GB
+  data_disk_size = 10000000000
+}
 resource "libvirt_pool" "cluster" {
   name = "cluster"
   type = "dir"
@@ -32,14 +38,14 @@ resource "libvirt_pool" "cluster" {
 # volumes to attach to the proxmox servers (10GB)
 resource "libvirt_volume" "proxmox_boot" {
   name          = "proxmox_boot"
-  size          = 10000000000
+  size          = local.boot_disk_size
   pool          = libvirt_pool.cluster.name
 }
 
 # volumes to attach to the proxmox servers (10GB)
 resource "libvirt_volume" "proxmox_data" {
   name          = "proxmox_data"
-  size          = 10000000000
+  size          = local.data_disk_size
   pool          = libvirt_pool.cluster.name
 }
 
@@ -49,11 +55,11 @@ resource "libvirt_volume" "proxmox_data" {
 # }
 
 
-# Create the machine
+# Always on Server
 resource "libvirt_domain" "promox-support" {
   name        = "proxmox-support"
   description = "Always on Support Server"
-  memory      = "512"
+  memory      = "1200"
   vcpu        = 1
   running     = "false"
 
@@ -78,6 +84,10 @@ resource "libvirt_domain" "promox-support" {
   }
 
   disk {
+    file = "/home/tsweets/projects/devbox/downloads/proxmox-ve_7.0-2.iso"
+  }
+
+  disk {
     volume_id = libvirt_volume.proxmox_boot.id
   }
 
@@ -90,6 +100,50 @@ resource "libvirt_domain" "promox-support" {
     listen_type = "address"
     autoport    = true
   }
+
+   boot_device {
+    dev = ["hd","cdrom"]
+  }
 }
 
-# IPs: use wait_for_lease true or after creation use terraform refresh and terraform show for the ips of domain
+# Backup and Recovery Server
+# resource "libvirt_domain" "backup-recovery" {
+#   name        = "backup-recovery"
+#   description = "Backup and Recovery server"
+#   memory      = "1200"
+#   vcpu        = 1
+#   running     = "false"
+
+
+#   network_interface {
+#     network_name = "default"
+#   }
+
+#   console {
+#     type        = "pty"
+#     target_port = "0"
+#     target_type = "serial"
+#   }
+
+#   console {
+#     type        = "pty"
+#     target_type = "virtio"
+#     target_port = "1"
+#   }
+
+#   disk {
+#     volume_id = libvirt_volume.proxmox_boot.id
+#   }
+
+#   disk {
+#     volume_id = libvirt_volume.proxmox_data.id
+#   }
+
+#   graphics {
+#     type        = "spice"
+#     listen_type = "address"
+#     autoport    = true
+#   }
+# }
+
+
