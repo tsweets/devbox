@@ -91,6 +91,18 @@ resource "libvirt_pool" "cluster" {
 #   template = file("${path.module}/network_config.cfg")
 # }
 
+# Core Services Server (ie DNS, LDAP)
+module "pve-cluster-core" {
+  source = "./pve-cluster-server"
+  cluster_server_name = "core-services"
+  boot_disk_size = local.boot_disk_size
+  data_disk_size = local.data_disk_size
+  network_id = libvirt_network.lab_network.id
+  network_mac = "52:54:00:62:ec:00"
+  network_address = "172.20.0.10"
+  pool_cluster_name = libvirt_pool.cluster.name
+}
+
 
 # Proxmox Always on Server
 module "pve-cluster-server-always-on" {

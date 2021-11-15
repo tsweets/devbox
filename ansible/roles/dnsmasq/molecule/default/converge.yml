@@ -4,7 +4,7 @@
   tasks:
     - name: "Include base"
       include_role:
-        name: "base"
+        name: "base_ubuntu"
     - name: "Include dnsmasq"
       include_role:
         name: "dnsmasq"

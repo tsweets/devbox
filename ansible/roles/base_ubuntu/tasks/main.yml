@@ -1,0 +1,6 @@
+---
+# tasks file for base_ubuntu
+- name: Update Apt Cache
+  apt:
+    update_cache: yes
+

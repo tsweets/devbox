@@ -1,5 +1,10 @@
 ---
 # tasks file for dnsmasq
+- name: Disable systemd-resolved
+  service:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
 - name: Install Dnsmasq
   package:
     name: dnsmasq

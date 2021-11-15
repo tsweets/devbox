@@ -1,5 +1,6 @@
 #cloud-config
 #  mkpasswd --method=SHA-512 --rounds=4096
+#  passwd in this case is 'ubuntu'
 autoinstall:
   version: 1
   identity:
