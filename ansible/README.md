@@ -4,7 +4,7 @@ ansible-playbook -i hosts.ini bootstrap.yml
 ### Molecule Cheat Sheet
 #### Create new role
 ```
-molecule init role certificate-authority
+molecule init role certificate-authority -d docker
 ```
 
 Then copy an existing config

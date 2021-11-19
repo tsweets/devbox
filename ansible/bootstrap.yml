@@ -15,6 +15,12 @@
   - name: Set Hostname
     hostname:
       name: bootstrap.cloud.skyline.lan
+
+  - name: update dns
+    lineinfile:
+      dest: /etc/resolv.conf
+      line: 'nameserver 172.20.0.1'
+      state: present
   roles:
     # Need to add this line to sudoers.d username     ALL=(ALL) NOPASSWD:ALL
   #- base

@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include base"
+      include_role:
+         name: "base_ubuntu"
+    - name: "Include 389_ds"
+      include_role:
+        name: "389_ds"
