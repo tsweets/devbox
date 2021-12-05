@@ -1,0 +1,31 @@
+---
+- hosts: bootstrap
+  become: true
+#  vars_files:
+#    secrets.yml
+  vars:
+
+  pre_tasks:
+  - name: Add IP to /etc/hosts
+    lineinfile:
+      dest: /etc/hosts
+      line: '172.20.0.10 bootstrap.cloud.skyline.lan bootstrap'
+      state: present
+
+  - name: Set Hostname
+    hostname:
+      name: bootstrap.cloud.skyline.lan
+
+  - name: update dns
+    lineinfile:
+      dest: /etc/resolv.conf
+      line: 'nameserver 172.20.0.1'
+      state: present
+  roles:
+    # Need to add this line to sudoers.d username     ALL=(ALL) NOPASSWD:ALL
+  #- base
+    - apt_cacher_ng
+    # Have the machine use the cache
+    # echo 'Acquire::http { Proxy "http://proxy:3142"; }' | sudo tee -a /etc/apt/apt.conf.d/proxy
+    - dnsmasq
+#  - ldap

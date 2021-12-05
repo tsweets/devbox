@@ -1,0 +1,13 @@
+---
+# dnf install -y dogtag-pki pki-base pki-tools
+- name: Add PKI Repo
+  yum_repository:
+    name: pki
+    description: PKI Repo on COPR
+    baseurl: https://download.copr.fedorainfracloud.org/results/@pki/master/fedora-$releasever-$basearch/
+    gpgkey: https://download.copr.fedorainfracloud.org/results/@pki/master/pubkey.gpg
+
+- name: Install PKI Services
+  dnf:
+    name: dogtag-pki pki-base pki-tools
+    state: latest

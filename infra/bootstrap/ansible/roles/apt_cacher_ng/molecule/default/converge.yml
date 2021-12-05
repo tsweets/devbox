@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include apt_cacher_ng"
+      include_role:
+        name: "apt_cacher_ng"
+  vars:
+    apt_cacher_ng_setup_ufw: True
